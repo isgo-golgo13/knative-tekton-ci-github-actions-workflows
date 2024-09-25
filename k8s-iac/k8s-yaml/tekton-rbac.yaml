@@ -1,0 +1,31 @@
+# tekton-rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-sa
+  namespace: tekton-pipelines
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tekton-role
+  namespace: tekton-pipelines
+rules:
+  - apiGroups: ["", "apps", "batch"]
+    resources: ["pods", "services", "deployments", "jobs"]
+    verbs: ["create", "delete", "get", "list", "watch", "patch", "update"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-rolebinding
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-sa
+    namespace: tekton-pipelines
+roleRef:
+  kind: Role
+  name: tekton-role
+  apiGroup: rbac.authorization.k8s.io

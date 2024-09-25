@@ -14,8 +14,7 @@ To install to the Kubernetes Cluster with Helm, apply the following.
 ```shell
 helm repo add tekton https://tekton.dev/charts/
 helm repo update
-kubectl create namespace tekton-pipelines
-helm install tekton-pipelines tekton/tekton-pipeline --namespace tekton-pipelines
+helm install tekton-pipelines tekton/tekton-pipeline --namespace tekton-pipelines --create-namespace
 ```
 
 ## Installation w/ ArgoCD
