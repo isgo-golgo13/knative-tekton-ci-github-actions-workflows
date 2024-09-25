@@ -1,0 +1,62 @@
+# engine-svc-pipeline.yaml
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: engine-svc-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: repo-url
+      description: The URL of the Git repository
+    - name: revision
+      description: The Git revision (branch, commit, etc.)
+  tasks:
+    - name: fetch-repo
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.revision)
+
+    - name: run-unit-tests
+      taskRef:
+        name: golang-test
+      params:
+        - name: package
+          value: ./...
+
+    - name: race-condition-check
+      taskSpec:
+        steps:
+          - name: race-check
+            image: golang:1.18
+            script: |
+              go test -race ./...
+
+    - name: docker-build
+      taskSpec:
+        steps:
+          - name: build
+            image: docker:19.03.12
+            script: |
+              docker build -t myapp:latest .
+
+    - name: cve-scan
+      taskSpec:
+        steps:
+          - name: trivy-scan
+            image: aquasec/trivy:latest
+            script: |
+              trivy --exit-code 1 --severity HIGH,CRITICAL image myapp:latest
+
+    - name: docker-push
+      taskSpec:
+        steps:
+          - name: push
+            image: docker:19.03.12
+            script: |
+              docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+              docker push myapp:latest
+      runAfter: ["cve-scan"]
