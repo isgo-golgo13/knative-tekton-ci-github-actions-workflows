@@ -60,7 +60,7 @@ To provide this declarative configuraiton the following `.values-vault-operator.
 and is forward to the Helm install for Vault.
 
 ```yaml
-# values.yaml for Vault Helm chart with auto-unseal
+# vault-values-operator.yaml for Vault Helm chart with auto-unseal
 server:
   extraEnvironmentVars:
     VAULT_SEAL_KUBERNETES_SECRET: "true"
