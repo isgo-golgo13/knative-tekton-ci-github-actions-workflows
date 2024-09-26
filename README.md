@@ -119,7 +119,9 @@ This job is triggered automatically after Vault is deployed, declaratively confi
 
 
 Next what is required is to declaratively and automatically provide the Vault policy creation. This is configured
-as a Kubernetes `Job`.
+with a Kubernetes `Job` and Kubernetes `ConfigMap.
+
+The ConfigMap for this.
 
 ```yaml
 # vault-policy-configmap.yaml
@@ -133,6 +135,33 @@ data:
     path "secret/data/dockerhub/*" {
       capabilities = ["read"]
     }
+```
+
+The Job for this.
+
+```yaml
+# vault-policy-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-policy-job
+  namespace: vault
+spec:
+  template:
+    spec:
+      serviceAccountName: vault
+      containers:
+      - name: vault
+        image: vault:latest
+        command: ["vault", "policy", "write", "tekton-policy", "/vault/policies/tekton-policy.hcl"]
+        volumeMounts:
+        - name: policy
+          mountPath: /vault/policies
+      volumes:
+      - name: policy
+        configMap:
+          name: vault-policy
+      restartPolicy: OnFailure
 ```
 
 
