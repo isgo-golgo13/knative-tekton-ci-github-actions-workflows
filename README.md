@@ -7,6 +7,8 @@ The following Kubernetes services are part of this architectural workflow.
 - External Secrets (Kubernetes) Operator
 - Tekton Knative Operator for Parallel Workflows (used for CI and CD)
 
+The required workflow result will provide a coordination of Hashicorp Vault Kubernetes Operator to serve as the
+cloud-agnostic Kubernetes-Native (In-Cluster) `Secrets` store. The secret credentials required for Tekton to reference
 
 ## Prerequistes
 
