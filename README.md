@@ -53,8 +53,11 @@ helm install tekton-pipelines tekton/tekton-pipeline --namespace tekton-pipeline
 
 The GitOps declarative configuration for Vault requires a two stepped actions.
 
-- Auto-Start (does a `vault init`)
+- Auto-Init (does a `vault init`)
 - Auto-Unsealing (does a `vault unseal`)
+
+There is an Auto-Unseal feature of Vault. This allows Vault to automatically unseal itself using a
+Cloud provided Key Management Service (KMS) orKubernetes Secrets. This configuration can get applied declaratively in Vaults Helm chart.
 
 To provide this declarative configuraiton the following `.values-vault-operator.yaml` configuration is required
 and is forward to the Helm install for Vault.
@@ -75,6 +78,10 @@ server:
       namespace: vault
       keyPrefix: vault-unseal-key
 ```
+Vault will now automatically initialize and unseal itself using Kubernetes secrets without needing manual intervention
+
+
+
 To install Hashicorp Vault Kubernetes Operator apply the following. In full-GitOps auto-provisioning, a
 direct `helm repo update` and `helm install` or `helm upgrade` is correctly deferred to ArgoCD using
 `GitOps for ArgoCD` design pattern and ArgoCD App-of-Apps or newer ArgoCD `ApplicationSets` or FluxCD.
@@ -120,6 +127,12 @@ spec:
         kubernetes:
           mountPath: "auth/kubernetes"
           role: "tekton-sa"
+```
+
+And to apply the resource.
+
+```shell
+kubectl apply -f eso-clustersecretstore.yaml
 ```
 
 
