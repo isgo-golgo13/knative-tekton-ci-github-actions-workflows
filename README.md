@@ -82,7 +82,7 @@ direct `helm repo update` and `helm install` or `helm upgrade` is correctly defe
 ```shell
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
-helm install vault hashicorp/vault --namespace vault --create-namespace -f  vault-values-operator.yaml
+helm install vault hashicorp/vault --namespace vault --create-namespace -f vault-values-operator.yaml
 ```
 
 
