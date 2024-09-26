@@ -53,8 +53,8 @@ helm install tekton-pipelines tekton/tekton-pipeline --namespace tekton-pipeline
 
 The GitOps declarative configuration for Vault requires a two stepped actions.
 
-- Auto-Start
-- Auto-Unsealing
+- Auto-Start (does a `vault init`)
+- Auto-Unsealing (does a `vault unseal`)
 
 To provide this declarative configuraiton the following `.values-vault-operator.yaml` configuration is required
 and is forward to the Helm install for Vault.
