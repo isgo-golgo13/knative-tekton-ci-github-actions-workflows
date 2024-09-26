@@ -1,0 +1,14 @@
+# values.yaml for Vault Helm chart with auto-unseal
+server:
+  extraEnvironmentVars:
+    VAULT_SEAL_KUBERNETES_SECRET: "true"
+  dataStorage:
+    enabled: true
+  ha:
+    enabled: true
+  unsealConfig:
+    enabled: true
+    kubernetes:
+      secretName: vault-unseal-keys
+      namespace: vault
+      keyPrefix: vault-unseal-key
