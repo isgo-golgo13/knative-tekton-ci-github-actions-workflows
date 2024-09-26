@@ -1,5 +1,11 @@
-# Knative Tekton CI with GitHub, GitHub Actions Workflows
-GitHub Actions Triggered Knative Tekton In-K8s Cluster CI Pipeline for Go App (Containerize, Aquasec Trivy NIST 800-53 CVE Scan)
+# Knative Tekton CI with GitHub Actions and Hashicorp Vault Operator Workflows
+GitHub Actions Triggered Knative Tekton In-K8s Cluster CI Pipeline for Go App (Containerize, Aquasec Trivy NIST 800-53 CVE Scan).
+
+The following Kubernetes services are part of this architectural workflow.
+
+- Hashicorp Vault Kubernetes Operator
+- External Secrets (Kubernetes) Operator
+- Tekton Knative Operator for Parallel Workflows (used for CI and CD)
 
 
 ## Prerequistes
@@ -13,6 +19,9 @@ The follow workflow is required to configure Tekton and Tetkon Pipeline with Git
 
 - Install (Provision) Kubernetes Cluster
 - Install (Provision) Tekton Operator to Kubernetes Cluster
+- Install (Provision) Hashicorp Vault Kubernetes Operator to the Kubernetes Cluster
+- Configure Hashicorp Vault Kubernetes Operator Auto-Unsealing Workflow (Kubernetes Job)
+- Install Kubernetes External Secrets Operator (ESO) and Register ESO w/ Hashicorp Vault
 - Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
 - Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
 
