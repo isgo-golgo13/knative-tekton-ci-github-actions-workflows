@@ -47,6 +47,40 @@ helm repo update
 helm install tekton-pipelines tekton/tekton-pipeline --namespace tekton-pipelines --create-namespace
 ```
 
+## Install (Provision) Hashicorp Vault Kubernetes Operator to the Kubernetes Cluster
+
+The GitOps declarative configuration for Vault requires a two stepped actions.
+
+-Auto-Start (vault init)
+-Auto-Unsealing (vault unseal)
+
+To provide this declarative configuraiton the following `.values-vault-operator.yaml` configuration is required
+and is forward to the Helm install for Vault.
+
+```yaml
+# values.yaml for Vault Helm chart with auto-unseal
+server:
+  extraEnvironmentVars:
+    VAULT_SEAL_KUBERNETES_SECRET: "true"
+  dataStorage:
+    enabled: true
+  ha:
+    enabled: true
+  unsealConfig:
+    enabled: true
+    kubernetes:
+      secretName: vault-unseal-keys
+      namespace: vault
+      keyPrefix: vault-unseal-key
+```
+
+```shell
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
+helm install vault hashicorp/vault --namespace vault --create-namespace
+```
+
+
 ### Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
 
 ### Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
