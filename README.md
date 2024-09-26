@@ -81,7 +81,6 @@ server:
 Vault will now automatically initialize and unseal itself using Kubernetes secrets without needing manual intervention
 
 
-
 To install Hashicorp Vault Kubernetes Operator apply the following. In full-GitOps auto-provisioning, a
 direct `helm repo update` and `helm install` or `helm upgrade` is correctly deferred to ArgoCD using
 `GitOps for ArgoCD` design pattern and ArgoCD App-of-Apps or newer ArgoCD `ApplicationSets` or FluxCD.
@@ -90,6 +89,50 @@ direct `helm repo update` and `helm install` or `helm upgrade` is correctly defe
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 helm install vault hashicorp/vault --namespace vault --create-namespace -f vault-values-operator.yaml
+```
+
+
+To provide automatic configuration for Vault to authorize to Kubernetes auth engine apply the following.
+
+```yaml
+# vault-kubernetes-auth-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-kubernetes-auth-job
+  namespace: vault
+spec:
+  template:
+    spec:
+      serviceAccountName: vault
+      containers:
+      - name: vault
+        image: vault:latest
+        command: ["vault", "write"]
+        args:
+          - "auth/kubernetes/config"
+          - "token_reviewer_jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
+          - "kubernetes_host=https://$KUBERNETES_PORT_443_TCP_ADDR:443"
+      restartPolicy: OnFailure
+```
+This job is triggered automatically after Vault is deployed, declaratively configuring the Kubernetes auth.
+
+
+Next what is required is to declaratively and automatically provide the Vault policy creation. This is configured
+as a Kubernetes `Job`.
+
+```yaml
+# vault-policy-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-policy
+  namespace: vault
+data:
+  tekton-policy.hcl: |
+    path "secret/data/dockerhub/*" {
+      capabilities = ["read"]
+    }
 ```
 
 
