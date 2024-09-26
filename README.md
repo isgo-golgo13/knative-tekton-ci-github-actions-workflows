@@ -30,7 +30,7 @@ The follow workflow is required to configure Tekton and Tetkon Pipeline with Git
 ### Install (Provision) Kubernetes Cluster
 
 Tekton requires a Kubernetes Cluster since it is deployed as a Kubernetes Operator Helm Chart.
-Tetkon provides a set of CRDs as covererd in the latter part of this page.
+Tekton provides a set of CRDs as covererd in the latter part of this page.
 
 ### GCP GKE Cluster Provision w/ Crossplane
 
@@ -75,7 +75,7 @@ server:
       namespace: vault
       keyPrefix: vault-unseal-key
 ```
-To install Hashicorl Vault Kubernetes Operator apply the following. In full-GitOps auto-provisioning, a
+To install Hashicorp Vault Kubernetes Operator apply the following. In full-GitOps auto-provisioning, a
 direct `helm repo update` and `helm install` or `helm upgrade` is correctly deferred to ArgoCD using
 `GitOps for ArgoCD` design pattern and ArgoCD App-of-Apps or newer ArgoCD `ApplicationSets` or FluxCD.
 
