@@ -24,6 +24,7 @@ The follow workflow is required to configure Tekton and Tetkon Pipeline with Git
 - Install (Provision) Hashicorp Vault Kubernetes Operator to the Kubernetes Cluster
 - Configure Hashicorp Vault Kubernetes Operator Auto-Unsealing Workflow (Kubernetes Job)
 - Install Kubernetes External Secrets Operator (ESO) and Register ESO w/ Hashicorp Vault
+- Configure Kubernetes External Secrets Operator to Pull DockerHub Credentials
 - Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
 - Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
 
@@ -163,7 +164,7 @@ spec:
           name: vault-policy
       restartPolicy: OnFailure
 ```
-
+This will apply the Tekton policy declaratively using Kubernetes Jobs.
 
 ## Install Kubernetes External Secrets Operator (ESO) and Register ESO w/ Hashicorp Vault
 
@@ -207,10 +208,38 @@ And to apply the resource.
 kubectl apply -f eso-clustersecretstore.yaml
 ```
 
+## Configure Kubernetes External Secrets Operator to Pull DockerHub Credentials
+
+The next step is to configure the ExternalSecret resource to pull the DockerHub credentials from Vault and
+store that as a Kubernetes Secret in the Tekton pipeline namespace.
+
+```yaml
+# external-secret-dockerhub.yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dockerhub-credentials
+  namespace: tekton-pipelines
+spec:
+  secretStoreRef:
+    name: vault-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: dockerhub-credentials
+    creationPolicy: Owner
+  data:
+    - secretKey: DOCKER_USERNAME
+      remoteRef:
+        key: dockerhub
+        property: DOCKER_USERNAME
+    - secretKey: DOCKER_PASSWORD
+      remoteRef:
+        key: dockerhub
+        property: DOCKER_PASSWORD
+```
 
 
-
-### Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
+### Provision Tekton RBAC Configuration for Kubernetes Cluster
 
 ### Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
 
