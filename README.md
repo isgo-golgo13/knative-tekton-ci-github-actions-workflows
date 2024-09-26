@@ -75,10 +75,8 @@ server:
       namespace: vault
       keyPrefix: vault-unseal-key
 ```
-To install Hashicorl Vault Kubernetes Operator apply the following.
-**NOTE**
-In full-GitOps auto-provisioning, a
-direct `helm repo update` and `helm install or helm upgrade -i vault hashicorp/vault -n vault` is deferred to ArgoCD using
+To install Hashicorl Vault Kubernetes Operator apply the following. In full-GitOps auto-provisioning, a
+direct `helm repo update` and `helm install` or `helm upgrade` is correctly deferred to ArgoCD using
 `GitOps for ArgoCD` design pattern and ArgoCD App-of-Apps or newer ArgoCD `ApplicationSets` or FluxCD.
 
 ```shell
