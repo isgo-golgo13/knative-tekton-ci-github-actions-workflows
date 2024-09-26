@@ -86,6 +86,45 @@ helm install vault hashicorp/vault --namespace vault --create-namespace
 ```
 
 
+## Install Kubernetes External Secrets Operator (ESO) and Register ESO w/ Hashicorp Vault
+
+To install the Kubernetes External Secrets Opertor to Kubernetes Cluster apply the following.
+
+```shell
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+helm install external-secrets external-secrets/external-secrets --namespace eso --create-namespace
+```
+
+Now a configuration for ESO is to dynamically pull the stored secrets in Hashicorp Vault at the point of
+provisioning (point of the secrets pull). This registration of associating ESO with Hashicorp Vault is acheived with
+the ESO `ClusterSecretStore` CR. The ClusterSecretStore CR will point to Hashicorp Vault. ESO can work with other secret store
+services such as GKE KeyVault or AWS Secrets Manager.
+
+The following is the required `ClusterSecretStore` CR that points to Hashicorp Vault.
+
+```yaml
+# eso-clustersecretstore.yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: vault-secret-store
+  namespace: eso
+spec:
+  provider:
+    vault:
+      server: "http://vault.vault.svc.cluster.local:8200"
+      path: "secret/data"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: "auth/kubernetes"
+          role: "tekton-sa"
+```
+
+
+
+
 ### Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
 
 ### Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
