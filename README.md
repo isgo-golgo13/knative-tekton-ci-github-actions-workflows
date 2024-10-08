@@ -26,7 +26,7 @@ The follow workflow is required to configure Tekton and Tetkon Pipeline with Git
 - Install Kubernetes External Secrets Operator (ESO) and Register ESO w/ Hashicorp Vault
 - Configure Kubernetes External Secrets Operator to Pull DockerHub Credentials
 - Provision Tekton RBAC Configuration for Kubernetes Cluster and Tekton Namespace
-- Provision GitHub Actions WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
+- Provision GitHub WebHook to Trigger Tetkton CI Pipeline w/ Tekton Triggers
 
 ### Install (Provision) Kubernetes Cluster
 
