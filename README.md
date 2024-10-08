@@ -17,7 +17,7 @@ cloud-agnostic Kubernetes-Native (In-Cluster) `Secrets` store. The secret creden
 
 ## Installation w/ out ArgoCD or FluxCD
 
-The follow workflow is required to configure Tekton and Tetkon Pipeline with GitHub Actions.
+The follow workflow is required to configure Tekton and Tetkon Pipeline with GitHub.
 
 - Install (Provision) Kubernetes Cluster
 - Install (Provision) Tekton Operator to Kubernetes Cluster
